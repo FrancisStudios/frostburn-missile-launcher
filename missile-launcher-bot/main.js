@@ -64,9 +64,6 @@ client.on('messageCreate', (message) => {
         if (SERVER_LAUNCHED) {
             message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
             haltFrostburn();
-            fs.writeFile('halt.semaphore', 'true', function (err) {
-                if (err) throw err;
-            })
         }else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
@@ -86,6 +83,9 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
+    fs.writeFile('halt.semaphore', 'true', function (err) {
+        if (err) throw err;
+    })
     console.log("❌Stopping server...");
 }
 
