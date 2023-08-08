@@ -22,7 +22,14 @@ const TOKENS = {
 }
 
 /* BOT SETUP */
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ 
+    intents: [
+    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.MessageContent
+    ]
+});
+
 config(); client.login(process.env.FROSTBURN_BOT_TOKEN);
 
 const LAUNCHKEYS = {
@@ -67,7 +74,6 @@ client.on('messageCreate', (message) => {
         }else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
-
 
 /* SERVER LAUNCH AND HALT */
 const launchFrostburn = (message) => {
