@@ -37,17 +37,17 @@ client.on('messageCreate', (message) => {
     if (message.content === TOKENS.COMMANDS.LAUNCH_VOTE) {
         if (LAUNCHKEYS._launchKey1 + LAUNCHKEYS._launchKey2 !== 2) {
             /* FILLING UP LAUNCHKEYS */
-            if (LAUNCHKEYS._launchKey1Owner !== message.author || LAUNCHKEYS._launchKey2Owner !== message.author) {
+            if (LAUNCHKEYS._launchKey1Owner !== message.author.globalName && LAUNCHKEYS._launchKey2Owner !== message.author.globalName) {
                 if (!SERVER_LAUNCHED) {
-
+                    console.log("✅Voted for start: ", message.author.globalName);
                     if (LAUNCHKEYS._launchKey1 === false) {
                         LAUNCHKEYS._launchKey1 = true;
-                        LAUNCHKEYS._launchKey1Owner = message.author;
+                        LAUNCHKEYS._launchKey1Owner = message.author.globalName;
                         clearVotesCounter(message.channel);
                         message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 1`);
                     } else if (LAUNCHKEYS._launchKey2 === false) {
                         LAUNCHKEYS._launchKey2 = true;
-                        LAUNCHKEYS._launchKey2Owner = message.author;
+                        LAUNCHKEYS._launchKey2Owner = message.author.globalName;
                         clearVotesCounter(message.channel);
                         message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 2`);
                         launchFrostburn(message);
@@ -75,13 +75,15 @@ const launchFrostburn = (message) => {
     SERVER_LAUNCHED = true;
     fs.writeFile('launch.semaphore', 'true', function(err){
         if(err) throw err;
-    })
+    });
+    console.log("🚀Launching server...");
 }
 
 const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
+    console.log("❌Stopping server...");
 }
 
 /* SET TIMEOUT FOR DEPLEATING VOTES */
