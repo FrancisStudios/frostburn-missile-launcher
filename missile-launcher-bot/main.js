@@ -5,7 +5,7 @@ import * as fs from 'fs';
 /* CHATBOT TOKENS */
 const TOKENS = {
     COMMANDS: {
-        LAUNCH_VOTE: "/frostburn vote launch",
+        LAUNCH_VOTE: "/frostburn vote start",
         STOP_HALT: "/frostburn stop"
     },
 
@@ -16,7 +16,8 @@ const TOKENS = {
         SERVER_IS_ALREADY_STARTING: "⚠️ Server is already started! No need to vote! ⚠️",
         VOTES_CLEARED: "❌ Votes are cleared. Now two keys are needed to launch the server. ❌",
         YOU_ALREADY_VOTED: "⚠️ You have already voted!",
-        SERVER_HALTED: "💤 Stopping server..."
+        SERVER_HALTED: "💤 Stopping server...",
+        SERVER_IS_ALREADY_HALTED: "💤💤💤 Server is already halted..."
     }
 }
 
@@ -60,11 +61,13 @@ client.on('messageCreate', (message) => {
 
     /* SERVER STOP SCENARIO */
     if (message.content === TOKENS.COMMANDS.STOP_HALT) {
-        message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
-        haltFrostburn();
-        fs.writeFile('halt.semaphore', 'true', function(err){
-            if(err) throw err;
-        })
+        if (SERVER_LAUNCHED) {
+            message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
+            haltFrostburn();
+            fs.writeFile('halt.semaphore', 'true', function (err) {
+                if (err) throw err;
+            })
+        }else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
 
@@ -73,8 +76,8 @@ client.on('messageCreate', (message) => {
 const launchFrostburn = (message) => {
     message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
     SERVER_LAUNCHED = true;
-    fs.writeFile('launch.semaphore', 'true', function(err){
-        if(err) throw err;
+    fs.writeFile('launch.semaphore', 'true', function (err) {
+        if (err) throw err;
     });
     console.log("🚀Launching server...");
 }
