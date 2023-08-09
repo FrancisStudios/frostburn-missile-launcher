@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 
 /* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
-const _TARGET_IP = '172.17.0.2';
+const _TARGET_IP = '172.20.0.20';
 const _TARGET_PORT = '5000';
 
 /* CHATBOT TOKENS */
@@ -84,7 +84,7 @@ client.on('messageCreate', (message) => {
 const launchFrostburn = (message) => {
     message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
     SERVER_LAUNCHED = true;
-    fs.writeFile('launch.semaphore', 'true', function (err) {
+    fs.writeFile('/opt/launch.semaphore', 'true', function (err) {
         if (err) throw err;
     });
     console.log("🚀Launching server...");
@@ -94,7 +94,7 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
-    fetch(`${_TARGET_IP}:${_TARGET_PORT}`, { method: 'POST', body: { "command": "stop" } });
+    fetch(`http://${_TARGET_IP}:${_TARGET_PORT}/stop`, { method: 'POST', body: '{ "command": "stop" }', headers: {'Content-Type': 'application/json'} });
     console.log("❌Stopping server...");
 }
 
