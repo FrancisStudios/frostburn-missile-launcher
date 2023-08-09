@@ -19,7 +19,8 @@
   "dependencies": {
     "discord-api-types": "^0.37.52",
     "discord.js": "^14.12.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.3.2"
   },
   "type": "module"
 }

@@ -1,6 +1,11 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { config } from 'dotenv';
 import * as fs from 'fs';
+import fetch from 'node-fetch';
+
+/* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
+const _TARGET_IP='172.17.0.2';
+const _TARGET_PORT='5000';
 
 /* CHATBOT TOKENS */
 const TOKENS = {
@@ -89,9 +94,7 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
-    fs.writeFile('halt.semaphore', 'true', function (err) {
-        if (err) throw err;
-    })
+    fetch(`${_TARGET_IP}:${_TARGET_PORT}`, {method: 'POST', body: {"command": "stop"}});
     console.log("❌Stopping server...");
 }
 
