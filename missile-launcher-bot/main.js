@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 
 /* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
-const _TARGET_IP='172.17.0.2';
-const _TARGET_PORT='5000';
+const _TARGET_IP = '172.17.0.2';
+const _TARGET_PORT = '5000';
 
 /* CHATBOT TOKENS */
 const TOKENS = {
@@ -27,11 +27,11 @@ const TOKENS = {
 }
 
 /* BOT SETUP */
-const client = new Client({ 
+const client = new Client({
     intents: [
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.MessageContent
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
     ]
 });
 
@@ -76,7 +76,7 @@ client.on('messageCreate', (message) => {
         if (SERVER_LAUNCHED) {
             message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
             haltFrostburn();
-        }else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
+        } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
 
@@ -94,7 +94,7 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
-    fetch(`${_TARGET_IP}:${_TARGET_PORT}`, {method: 'POST', body: {"command": "stop"}});
+    fetch(`${_TARGET_IP}:${_TARGET_PORT}`, { method: 'POST', body: { "command": "stop" } });
     console.log("❌Stopping server...");
 }
 
