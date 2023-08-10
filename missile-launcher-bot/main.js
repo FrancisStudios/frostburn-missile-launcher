@@ -94,7 +94,15 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
-    fetch(`http://${_TARGET_IP}:${_TARGET_PORT}/stop`, { method: 'POST', body: '{ "command": "stop" }', headers: {'Content-Type': 'application/json'} });
+    try {
+        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}/stop`, {
+            method: 'POST',
+            body: '{ "command": "stop" }',
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.log('No response API server...')
+    }
     console.log("❌Stopping server...");
 }
 
