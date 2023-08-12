@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import * as TOKENS from './tokens.store.js'
 import { FrostburnLaunchkeys } from './classes/keys.class.js';
 import { FrostburnPowerSwitch } from './classes/power-switch.class.js';
+import { ErrorHandler } from './classes/error-handler.class.js';
 
 /* BOT SETUP */
 const client = new Client({
@@ -15,8 +16,9 @@ const client = new Client({
 
 config(); client.login(process.env.FROSTBURN_BOT_TOKEN);
 
-const launchKeys = new FrostburnLaunchkeys();
-const frostburnPS = new FrostburnPowerSwitch(client);
+const launchKeys = FrostburnLaunchkeys.getInstance();
+const frostburnPS = FrostburnPowerSwitch.getInstance(client);
+const errorHandler = ErrorHandler.getInstance(client);
 
 /* MESSAGE HANDLER */
 client.on('messageCreate', (message) => {
@@ -35,11 +37,11 @@ client.on('messageCreate', (message) => {
                     message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 2`);
                     frostburnPS.launchFrostburn(message);
                 }
-
             }
         } else {
             //TODO: create an error handler where posts the error messages to the author messages
             // else branches were deleted - mind you
+            
         }
     }
 

@@ -1,4 +1,5 @@
 export class FrostburnLaunchkeys {
+    instance /* Singleton Instance */ 
     SERVER_LAUNCHED = false;
     KEY1 = {
         launchKey1Set: false,
@@ -13,7 +14,7 @@ export class FrostburnLaunchkeys {
 
     static getInstance() {
         if (!this.instance) {
-            this.instance = new FrostburnPowerSwitch();
+            this.instance = new FrostburnLaunchkeys();
         }
 
         return this.instance;

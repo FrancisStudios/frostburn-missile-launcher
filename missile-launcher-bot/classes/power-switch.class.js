@@ -6,7 +6,7 @@ import { FrostburnLaunchkeys } from './keys.class.js';
 export class FrostburnPowerSwitch {
     instance /* Singleton Instance*/
     client /* discord.js Client */
-    launchKeys = new FrostburnLaunchkeys();
+    launchKeys = FrostburnLaunchkeys.getInstance();
 
     constructor(client) {
         this.client = client
