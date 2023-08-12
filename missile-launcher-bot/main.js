@@ -5,7 +5,8 @@ import fetch from 'node-fetch';
 
 /* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
 const _TARGET_IP = '172.20.0.20';
-const _TARGET_PORT = '5000';
+const _TARGET_PORT = '80';
+const _COMMMANDS_ENDPOINT = '/command'
 
 /* CHATBOT TOKENS */
 const TOKENS = {
@@ -84,10 +85,30 @@ client.on('messageCreate', (message) => {
 const launchFrostburn = (message) => {
     message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
     SERVER_LAUNCHED = true;
-    fs.writeFile('/opt/launch.semaphore', 'true', function (err) {
-        if (err) throw err;
-    });
-    console.log("🚀Launching server...");
+    try {
+        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
+            method: 'POST',
+            body: '{ "command": "start" }',
+            headers: { 'Content-Type': 'application/json' }
+        }).then(
+            function (response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+
+                /* RESPONSE OK */ 
+                response.json().then(function () {
+                    if (response.status === 200) console.log("🚀Launching server...");
+                });
+            }
+        ).catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+    } catch (error) {
+        console.log('😔 No response API server...')
+    }
 }
 
 const haltFrostburn = () => {
@@ -95,29 +116,29 @@ const haltFrostburn = () => {
     LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
     SERVER_LAUNCHED = false;
     try {
-        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}/stop`, {
+        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
             method: 'POST',
             body: '{ "command": "stop" }',
             headers: { 'Content-Type': 'application/json' }
         }).then(
-            function(response) {
-              if (response.status !== 200) {
-                console.log('Looks like there was a problem. Status Code: ' +
-                  response.status);
-                return;
-              }
-              response.json().then(function(data) {
-                console.log(data);
-              });
+            function (response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+
+                /* RESPONSE OK */ 
+                response.json().then(function () {
+                    if (response.status === 200) console.log("❌Stopping server...");
+                });
             }
-          )
-          .catch(function(err) {
+        ).catch(function (err) {
             console.log('Fetch Error :-S', err);
-          });
+        });
     } catch (error) {
-        console.log('No response API server...')
+        console.log('😔 No response API server...')
     }
-    console.log("❌Stopping server...");
 }
 
 /* SET TIMEOUT FOR DEPLEATING VOTES */
