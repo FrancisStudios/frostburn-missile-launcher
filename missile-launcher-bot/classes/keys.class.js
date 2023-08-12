@@ -18,7 +18,6 @@ export class FrostburnLaunchkeys {
         return this.instance;
     }
 
-
     /**
      * @param {string} ownerName
      */
@@ -44,11 +43,11 @@ export class FrostburnLaunchkeys {
     /**
      * @param {boolean} status
      */
-    set setServerOnlineStatus(status) { this.SERVER_LAUNCHED = status; }
+    setServerOnlineStatus(status) { this.SERVER_LAUNCHED = status; }
 
     isAlreadyKeyOwner(messageAuthorName) {
         return (
-            this.KEY1.launchKey1Owner === messageAuthorName &&
+            this.KEY1.launchKey1Owner === messageAuthorName ||
             this.KEY2.launchKey2Owner === messageAuthorName
         );
     }

@@ -15,8 +15,8 @@ export class ErrorHandler {
     }
 
     handleErrorMessages(_launchkeys, message) {
-        if (_launchkeys.isServerLaunched) message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING);
-        if (_launchkeys.isAlreadyKeyOwner(message.author.globalName)) message.reply(TOKENS.RESPONSES.YOU_ALREADY_VOTED);
-        if (_launchkeys.isServerLaunched) message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING);
+        if (_launchkeys.isServerLaunched) { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING); return; }
+        if (_launchkeys.isAlreadyKeyOwner(message.author.globalName)) { message.reply(TOKENS.RESPONSES.YOU_ALREADY_VOTED); return; }
+        if (_launchkeys.isServerLaunched) { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING); return; }
     }
 }

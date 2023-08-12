@@ -1,12 +1,12 @@
 import TOKENS from '../tokens.store.js';
 import fetch from 'node-fetch';
-import * as FrostburnRemote from '../remote.config.js';
+import SERVER_CONFIG from '../remote.config.js';
 import { FrostburnLaunchkeys } from './keys.class.js';
 
 export class FrostburnPowerSwitch {
-    instance /* Singleton Instance*/
-    client /* discord.js Client */
-    launchKeys = FrostburnLaunchkeys.getInstance();
+    instance; /* Singleton Instance*/
+    client; /* discord.js Client */
+    launchKeys = FrostburnLaunchkeys.getInstance();;
 
     constructor(client) {
         this.client = client
@@ -16,23 +16,23 @@ export class FrostburnPowerSwitch {
         if (!this.instance) {
             this.instance = new FrostburnPowerSwitch(client);
         }
-
         return this.instance;
     }
+
+    static returnInstance(){ return this.instance; }
 
     /* START SERVER */
     launchFrostburn = (message) => {
         message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
         try {
-            fetch(`http://${FrostburnRemote.TARGET_IP}:${FrostburnRemote.TARGET_PORT}${FrostburnRemote.ENDPOINTS.COMMAND}`, {
+            fetch(`http://${SERVER_CONFIG.TARGET_IP}:${SERVER_CONFIG.TARGET_PORT}${SERVER_CONFIG.ENDPOINTS.COMMAND}`, {
                 method: 'POST',
                 body: '{ "command": "start" }',
                 headers: { 'Content-Type': 'application/json' }
             }).then(
                 function (response) {
                     if (response.status !== 200) {
-                        console.log('Looks like there was a problem. Status Code: ' +
-                            response.status);
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
                         return;
                     }
 
@@ -40,7 +40,8 @@ export class FrostburnPowerSwitch {
                     response.json().then(function () {
                         if (response.status === 200) {
                             console.log("🚀Launching server...");
-                            launchKeys.setServerOnlineStatus = true ;
+                            let launchKeys = FrostburnPowerSwitch.returnInstance().launchKeys;
+                            launchKeys.setServerOnlineStatus(true);
                         }
                     });
                 }
@@ -52,18 +53,17 @@ export class FrostburnPowerSwitch {
         }
     }
 
-    /* STOP SERVER */ 
+    /* STOP SERVER */
     haltFrostburn = () => {
         try {
-            fetch(`http://${FrostburnRemote.TARGET_IP}:${FrostburnRemote.TARGET_PORT}${FrostburnRemote.ENDPOINTS.COMMAND}`, {
+            fetch(`http://${SERVER_CONFIG.TARGET_IP}:${SERVER_CONFIG.TARGET_PORT}${SERVER_CONFIG.ENDPOINTS.COMMAND}`, {
                 method: 'POST',
                 body: '{ "command": "stop" }',
                 headers: { 'Content-Type': 'application/json' }
             }).then(
                 function (response) {
                     if (response.status !== 200) {
-                        console.log('Looks like there was a problem. Status Code: ' +
-                            response.status);
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
                         return;
                     }
 
@@ -71,6 +71,7 @@ export class FrostburnPowerSwitch {
                     response.json().then(function () {
                         if (response.status === 200) {
                             console.log("❌Stopping server...");
+                            let launchKeys = FrostburnPowerSwitch.returnInstance().launchKeys;
                             launchKeys.clearAllKeys();
                             launchKeys.setServerOnlineStatus = false;
                         }
