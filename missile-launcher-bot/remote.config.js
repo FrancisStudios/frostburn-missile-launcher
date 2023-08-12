@@ -7,6 +7,9 @@ const SERVER_CONFIG = {
     TARGET_PORT: _TARGET_PORT,
     ENDPOINTS: {
         COMMAND: _COMMMANDS_ENDPOINT
+    },
+    EXTERNAL: {
+        JOKE_API: 'https://v2.jokeapi.dev/joke/Any?type=single'
     }
 }
 
