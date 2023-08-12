@@ -1,6 +1,6 @@
 {
   "name": "frostburn-missile-launcher",
-  "version": "1.1.0",
+  "version": "1.1.6",
   "description": "Start frostburn via Discord",
   "main": "./missile-launcher-bot/main.js",
   "scripts": {
