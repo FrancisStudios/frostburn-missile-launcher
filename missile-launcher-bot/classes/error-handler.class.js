@@ -1,4 +1,4 @@
-import * as TOKENS from '../tokens.store.js';
+import TOKENS from '../tokens.store.js';
 export class ErrorHandler {
     client /* DC Client */
     instance /* Singleton Instance */

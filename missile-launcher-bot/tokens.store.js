@@ -1,4 +1,4 @@
-export const TOKENS = {
+const TOKENS = {
     COMMANDS: {
         LAUNCH_VOTE: "/frostburn vote start",
         STOP_HALT: "/frostburn stop"
@@ -15,3 +15,5 @@ export const TOKENS = {
         SERVER_IS_ALREADY_HALTED: "💤💤💤 Server is already halted..."
     }
 }
+
+export default TOKENS;

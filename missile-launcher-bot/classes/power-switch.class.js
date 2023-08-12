@@ -1,4 +1,4 @@
-import * as TOKENS from '../tokens.store.js';
+import TOKENS from '../tokens.store.js';
 import fetch from 'node-fetch';
 import * as FrostburnRemote from '../remote.config.js';
 import { FrostburnLaunchkeys } from './keys.class.js';
@@ -40,7 +40,7 @@ export class FrostburnPowerSwitch {
                     response.json().then(function () {
                         if (response.status === 200) {
                             console.log("🚀Launching server...");
-                            launchKeys.setServerOnlineStatus(true);
+                            launchKeys.setServerOnlineStatus = true ;
                         }
                     });
                 }
@@ -48,7 +48,7 @@ export class FrostburnPowerSwitch {
                 console.log('Fetch Error :-S', err);
             });
         } catch (error) {
-            console.log('😔 No response API server...')
+            console.log('😔 No response from API server...')
         }
     }
 
@@ -72,7 +72,7 @@ export class FrostburnPowerSwitch {
                         if (response.status === 200) {
                             console.log("❌Stopping server...");
                             launchKeys.clearAllKeys();
-                            launchKeys.setServerOnlineStatus(false);
+                            launchKeys.setServerOnlineStatus = false;
                         }
                     });
                 }
@@ -80,7 +80,7 @@ export class FrostburnPowerSwitch {
                 console.log('Fetch Error :-S', err);
             });
         } catch (error) {
-            console.log('😔 No response API server...')
+            console.log('😔 No response from API server...')
         }
     }
 }

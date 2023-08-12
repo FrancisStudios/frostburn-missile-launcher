@@ -1,5 +1,4 @@
 export class FrostburnLaunchkeys {
-    instance /* Singleton Instance */ 
     SERVER_LAUNCHED = false;
     KEY1 = {
         launchKey1Set: false,
@@ -16,7 +15,6 @@ export class FrostburnLaunchkeys {
         if (!this.instance) {
             this.instance = new FrostburnLaunchkeys();
         }
-
         return this.instance;
     }
 
@@ -50,13 +48,16 @@ export class FrostburnLaunchkeys {
 
     isAlreadyKeyOwner(messageAuthorName) {
         return (
-            this.KEY1.launchKey1Owner !== messageAuthorName &&
-            this.KEY2.launchKey2Owner !== messageAuthorName
+            this.KEY1.launchKey1Owner === messageAuthorName &&
+            this.KEY2.launchKey2Owner === messageAuthorName
         );
     }
 
     isAllKeysSet() {
-        return (launchKey1Set + launchKey2Set == 2 && (launchKey1Owner !== '' && launchKey2Owner !== ''))
+        return (
+            this.KEY1.launchKey1Set + this.KEY2.launchKey2Set == 2 &&
+            (this.KEY1.launchKey1Owner !== '' && this.KEY2.launchKey2Owner !== '')
+        )
     }
 
     clearAllKeys() {
