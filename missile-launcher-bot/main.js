@@ -1,6 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { config } from 'dotenv';
-import * as fs from 'fs';
 import fetch from 'node-fetch';
 
 /* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
@@ -84,7 +83,6 @@ client.on('messageCreate', (message) => {
 /* SERVER LAUNCH AND HALT */
 const launchFrostburn = (message) => {
     message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
-    SERVER_LAUNCHED = true;
     try {
         fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
             method: 'POST',
@@ -98,9 +96,12 @@ const launchFrostburn = (message) => {
                     return;
                 }
 
-                /* RESPONSE OK */ 
+                /* RESPONSE OK */
                 response.json().then(function () {
-                    if (response.status === 200) console.log("🚀Launching server...");
+                    if (response.status === 200) {
+                        console.log("🚀Launching server...");
+                        SERVER_LAUNCHED = true;
+                    }
                 });
             }
         ).catch(function (err) {
@@ -112,9 +113,6 @@ const launchFrostburn = (message) => {
 }
 
 const haltFrostburn = () => {
-    LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
-    LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
-    SERVER_LAUNCHED = false;
     try {
         fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
             method: 'POST',
@@ -128,9 +126,14 @@ const haltFrostburn = () => {
                     return;
                 }
 
-                /* RESPONSE OK */ 
+                /* RESPONSE OK */
                 response.json().then(function () {
-                    if (response.status === 200) console.log("❌Stopping server...");
+                    if (response.status === 200) {
+                        console.log("❌Stopping server...");
+                        LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
+                        LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
+                        SERVER_LAUNCHED = false;
+                    }
                 });
             }
         ).catch(function (err) {
