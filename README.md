@@ -23,4 +23,4 @@ To stop the server, type
 /frostburn stop
 ```
 
-Only one people is enough to stop the server, so the last one please be kind and halt after you done playing. Let's not waste our server's resources.
+Only one person is enough to stop the server, so the last one please be kind and halt after you done playing. Let's not waste our server's resources.
