@@ -1,30 +1,9 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { config } from 'dotenv';
-import fetch from 'node-fetch';
+import * as TOKENS from './tokens.store.js'
 
 /* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
-const _TARGET_IP = '172.20.0.20';
-const _TARGET_PORT = '80';
-const _COMMMANDS_ENDPOINT = '/command'
 
-/* CHATBOT TOKENS */
-const TOKENS = {
-    COMMANDS: {
-        LAUNCH_VOTE: "/frostburn vote start",
-        STOP_HALT: "/frostburn stop"
-    },
-
-    RESPONSES: {
-        VOTE_REGISTERED: "🔑 Launch key inserted in position",
-        VOTE_ALREADY_IN_USE: "✅ You have already voted!",
-        SERVER_STARTING: "🚀 Hurray! Two keys are in! Frostburn is starting! 🚀",
-        SERVER_IS_ALREADY_STARTING: "⚠️ Server is already started! No need to vote! ⚠️",
-        VOTES_CLEARED: "❌ Votes are cleared. Now two keys are needed to launch the server. ❌",
-        YOU_ALREADY_VOTED: "⚠️ You have already voted!",
-        SERVER_HALTED: "💤 Stopping server...",
-        SERVER_IS_ALREADY_HALTED: "💤💤💤 Server is already halted..."
-    }
-}
 
 /* BOT SETUP */
 const client = new Client({
@@ -79,70 +58,6 @@ client.on('messageCreate', (message) => {
         } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
-
-/* SERVER LAUNCH AND HALT */
-const launchFrostburn = (message) => {
-    message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
-    try {
-        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
-            method: 'POST',
-            body: '{ "command": "start" }',
-            headers: { 'Content-Type': 'application/json' }
-        }).then(
-            function (response) {
-                if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' +
-                        response.status);
-                    return;
-                }
-
-                /* RESPONSE OK */
-                response.json().then(function () {
-                    if (response.status === 200) {
-                        console.log("🚀Launching server...");
-                        SERVER_LAUNCHED = true;
-                    }
-                });
-            }
-        ).catch(function (err) {
-            console.log('Fetch Error :-S', err);
-        });
-    } catch (error) {
-        console.log('😔 No response API server...')
-    }
-}
-
-const haltFrostburn = () => {
-    try {
-        fetch(`http://${_TARGET_IP}:${_TARGET_PORT}${_COMMMANDS_ENDPOINT}`, {
-            method: 'POST',
-            body: '{ "command": "stop" }',
-            headers: { 'Content-Type': 'application/json' }
-        }).then(
-            function (response) {
-                if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' +
-                        response.status);
-                    return;
-                }
-
-                /* RESPONSE OK */
-                response.json().then(function () {
-                    if (response.status === 200) {
-                        console.log("❌Stopping server...");
-                        LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
-                        LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
-                        SERVER_LAUNCHED = false;
-                    }
-                });
-            }
-        ).catch(function (err) {
-            console.log('Fetch Error :-S', err);
-        });
-    } catch (error) {
-        console.log('😔 No response API server...')
-    }
-}
 
 /* SET TIMEOUT FOR DEPLEATING VOTES */
 const clearVotesCounter = (channel) => {
