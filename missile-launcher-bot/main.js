@@ -1,9 +1,8 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { config } from 'dotenv';
 import * as TOKENS from './tokens.store.js'
-
-/* UNICUM(TM) MINECRAFT-API ENDPOINT CONFIG*/
-
+import { FrostburnLaunchkeys } from './classes/keys.class.js';
+import { FrostburnPowerSwitch } from './classes/power-switch.class.js';
 
 /* BOT SETUP */
 const client = new Client({
@@ -16,45 +15,39 @@ const client = new Client({
 
 config(); client.login(process.env.FROSTBURN_BOT_TOKEN);
 
-const LAUNCHKEYS = {
-    _launchKey1: false, _launchKey1Owner: '',
-    _launchKey2: false, _launchKey2Owner: '',
-}
-
-let SERVER_LAUNCHED = false;
+const launchKeys = new FrostburnLaunchkeys();
+const frostburnPS = new FrostburnPowerSwitch(client);
 
 /* MESSAGE HANDLER */
 client.on('messageCreate', (message) => {
     /* SERVER START SCENARIO (SORRY FOR THE SPAGHETTO)*/
     if (message.content === TOKENS.COMMANDS.LAUNCH_VOTE) {
-        if (LAUNCHKEYS._launchKey1 + LAUNCHKEYS._launchKey2 !== 2) {
-            /* FILLING UP LAUNCHKEYS */
-            if (LAUNCHKEYS._launchKey1Owner !== message.author.globalName && LAUNCHKEYS._launchKey2Owner !== message.author.globalName) {
-                if (!SERVER_LAUNCHED) {
-                    console.log("✅Voted for start: ", message.author.globalName);
-                    if (LAUNCHKEYS._launchKey1 === false) {
-                        LAUNCHKEYS._launchKey1 = true;
-                        LAUNCHKEYS._launchKey1Owner = message.author.globalName;
-                        clearVotesCounter(message.channel);
-                        message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 1`);
-                    } else if (LAUNCHKEYS._launchKey2 === false) {
-                        LAUNCHKEYS._launchKey2 = true;
-                        LAUNCHKEYS._launchKey2Owner = message.author.globalName;
-                        clearVotesCounter(message.channel);
-                        message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 2`);
-                        launchFrostburn(message);
-                    }
+        if (launchKeys.isAllKeysSet && !launchKeys.isAlreadyKeyOwner(message.author.globalName)) {
+            if (!launchKeys.isServerLaunched) {
+                console.log("✅Voted for start: ", message.author.globalName);
+                if (!launchKeys.getLaunchKey1.launchKey1Set) {
+                    launchKeys.setLaunchKey1(message.author.globalName);
+                    clearVotesCounter(message.channel);
+                    message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 1`);
+                } else if (!launchKeys.getLaunchKey2.launchKey2Set) {
+                    launchKeys.setLaunchKey2(message.author.globalName);
+                    clearVotesCounter(message.channel);
+                    message.reply(`${TOKENS.RESPONSES.VOTE_REGISTERED} 2`);
+                    frostburnPS.launchFrostburn(message);
+                }
 
-                } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING); } // ! SERVER LAUNCHED
-            } else { message.reply(TOKENS.RESPONSES.YOU_ALREADY_VOTED); } // ! MESSAGE AUTHOR IS NOT OWNER OF ONE OF THE KEYS
-        } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_STARTING); } // ! THERE IS AN OPEN LAUNCH KEY
+            }
+        } else {
+            //TODO: create an error handler where posts the error messages to the author messages
+            // else branches were deleted - mind you
+        }
     }
 
     /* SERVER STOP SCENARIO */
     if (message.content === TOKENS.COMMANDS.STOP_HALT) {
-        if (SERVER_LAUNCHED) {
+        if (launchKeys.isServerLaunched) {
             message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
-            haltFrostburn();
+            frostburnPS.haltFrostburn();
         } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
     }
 });
@@ -62,8 +55,7 @@ client.on('messageCreate', (message) => {
 /* SET TIMEOUT FOR DEPLEATING VOTES */
 const clearVotesCounter = (channel) => {
     setTimeout(() => {
-        LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
-        LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
-        if (!SERVER_LAUNCHED) channel.send(TOKENS.RESPONSES.VOTES_CLEARED);
+        launchKeys.clearAllKeys();
+        if (!launchKeys.isServerLaunched) channel.send(TOKENS.RESPONSES.VOTES_CLEARED);
     }, 120000);
 }

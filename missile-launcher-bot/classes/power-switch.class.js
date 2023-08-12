@@ -1,10 +1,12 @@
-import * as TOKENS from '../tokens.store';
+import * as TOKENS from '../tokens.store.js';
 import fetch from 'node-fetch';
-import * as FrostburnRemote from '../remote.config';
+import * as FrostburnRemote from '../remote.config.js';
+import { FrostburnLaunchkeys } from './keys.class.js';
 
 export class FrostburnPowerSwitch {
     instance /* Singleton Instance*/
     client /* discord.js Client */
+    launchKeys = new FrostburnLaunchkeys();
 
     constructor(client) {
         this.client = client
@@ -19,7 +21,7 @@ export class FrostburnPowerSwitch {
     }
 
     /* START SERVER */
-    static launchFrostburn = (message) => {
+    launchFrostburn = (message) => {
         message.channel.send(TOKENS.RESPONSES.SERVER_STARTING);
         try {
             fetch(`http://${FrostburnRemote.TARGET_IP}:${FrostburnRemote.TARGET_PORT}${FrostburnRemote.ENDPOINTS.COMMAND}`, {
@@ -38,7 +40,7 @@ export class FrostburnPowerSwitch {
                     response.json().then(function () {
                         if (response.status === 200) {
                             console.log("🚀Launching server...");
-                            SERVER_LAUNCHED = true;
+                            launchKeys.setServerOnlineStatus(true);
                         }
                     });
                 }
@@ -51,7 +53,7 @@ export class FrostburnPowerSwitch {
     }
 
     /* STOP SERVER */ 
-    static haltFrostburn = () => {
+    haltFrostburn = () => {
         try {
             fetch(`http://${FrostburnRemote.TARGET_IP}:${FrostburnRemote.TARGET_PORT}${FrostburnRemote.ENDPOINTS.COMMAND}`, {
                 method: 'POST',
@@ -69,9 +71,8 @@ export class FrostburnPowerSwitch {
                     response.json().then(function () {
                         if (response.status === 200) {
                             console.log("❌Stopping server...");
-                            LAUNCHKEYS._launchKey1 = false; LAUNCHKEYS._launchKey2 = false;
-                            LAUNCHKEYS._launchKey1Owner = ''; LAUNCHKEYS._launchKey2Owner = '';
-                            SERVER_LAUNCHED = false;
+                            launchKeys.clearAllKeys();
+                            launchKeys.setServerOnlineStatus(false);
                         }
                     });
                 }
