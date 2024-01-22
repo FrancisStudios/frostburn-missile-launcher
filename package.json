@@ -1,26 +1,29 @@
 {
-  "name": "frostburn-missile-launcher",
-  "version": "1.1.6",
-  "description": "Start frostburn via Discord",
-  "main": "./missile-launcher-bot/main.js",
-  "scripts": {
-    "start": "node ./missile-launcher-bot/main.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FrancisStudios/frostburn-missile-launcher.git"
-  },
-  "author": "FrancisStudios",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/FrancisStudios/frostburn-missile-launcher/issues"
-  },
-  "homepage": "https://github.com/FrancisStudios/frostburn-missile-launcher#readme",
-  "dependencies": {
-    "discord-api-types": "^0.37.52",
-    "discord.js": "^14.12.1",
-    "dotenv": "^16.3.1",
-    "node-fetch": "^3.3.2"
-  },
-  "type": "module"
+    "name": "frostburn-missile-launcher",
+    "version": "1.2.6",
+    "description": "Start frostburn via Discord",
+    "main": "./missile-launcher-bot/main.js",
+    "scripts": {
+        "start": "node ./missile-launcher-bot/main.js",
+        "publish": "node ./publish.fml.js",
+        "publish:major": "node ./publish.fml.js MAJOR",
+        "publish:minor": "node ./publish.fml.js MINOR"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FrancisStudios/frostburn-missile-launcher.git"
+    },
+    "author": "FrancisStudios",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/FrancisStudios/frostburn-missile-launcher/issues"
+    },
+    "homepage": "https://github.com/FrancisStudios/frostburn-missile-launcher#readme",
+    "dependencies": {
+        "discord-api-types": "^0.37.52",
+        "discord.js": "^14.12.1",
+        "dotenv": "^16.3.1",
+        "node-fetch": "^3.3.2"
+    },
+    "type": "module"
 }

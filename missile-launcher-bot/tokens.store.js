@@ -1,6 +1,6 @@
 const TOKENS = {
     COMMANDS: {
-        LAUNCH_VOTE: "/frostburn vote start",
+        LAUNCH_VOTE: "/frostburn start",
         STOP_HALT: "/frostburn stop"
     },
 
