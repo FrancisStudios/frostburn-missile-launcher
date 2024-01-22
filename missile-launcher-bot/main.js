@@ -4,8 +4,9 @@ import TOKENS from './tokens.store.js';
 import { FrostburnLaunchkeys } from './classes/keys.class.js';
 import { FrostburnPowerSwitch } from './classes/power-switch.class.js';
 import { ErrorHandler } from './classes/error-handler.class.js';
+import { FrostburnLogger } from './classes/logger.class.js';
 
-/* BOT SETUP */
+/* Bot Setup */
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -14,16 +15,19 @@ const client = new Client({
     ]
 });
 
+/* Setting Client Configuration */
 config(); client.login(process.env.FROSTBURN_BOT_TOKEN);
 
+/* Building Class Instances */
 const launchKeys = FrostburnLaunchkeys.getInstance();
 const frostburnPS = FrostburnPowerSwitch.getInstance(client);
 const errorHandler = ErrorHandler.getInstance(client);
+const logger = FrostburnLogger;
 
-
+/* Program Flow */
 client.on('ready', () => {
 
-    console.log('🤖 Frostburn Missile Launcher - READY!')
+    logger.logReadyState();
 
     /* FROSTBURN DISCROD COMMAND HANDLER */
     client.on('messageCreate', (message) => {
@@ -31,7 +35,7 @@ client.on('ready', () => {
             case TOKENS.COMMANDS.LAUNCH_VOTE:
                 if (!launchKeys.isAllKeysSet() && !launchKeys.isAlreadyKeyOwner(message.author.globalName) && !launchKeys.isServerLaunched) {
                     if (!launchKeys.isServerLaunched) {
-                        console.log("✅Voted for start: ", message.author.globalName);
+                        logger.logVotedForStart(message.author.globalName);
                         fillLaunchKeys(message);
                     }
                 } else { errorHandler.handleErrorMessages(launchKeys, message); }
@@ -39,6 +43,7 @@ client.on('ready', () => {
 
             case TOKENS.COMMANDS.STOP_HALT:
                 if (launchKeys.isServerLaunched) {
+                    logger.logHaltTrigger(message.author.globalName);
                     message.channel.send(TOKENS.RESPONSES.SERVER_HALTED);
                     frostburnPS.haltFrostburn();
                 } else { message.channel.send(TOKENS.RESPONSES.SERVER_IS_ALREADY_HALTED); }
@@ -47,6 +52,7 @@ client.on('ready', () => {
     });
 });
 
+/* Launchkey Setter */
 const fillLaunchKeys = (message) => {
     if (!launchKeys.getLaunchKey1.launchKey1Set) {
         launchKeys.setLaunchKey1 = message.author.globalName;
@@ -60,7 +66,7 @@ const fillLaunchKeys = (message) => {
     }
 }
 
-/* SET TIMEOUT FOR DEPLEATING VOTES */
+/* Timeout For Votes */
 const clearVotesCounter = (channel) => {
     setTimeout(() => {
         launchKeys.clearAllKeys();
